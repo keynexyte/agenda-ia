@@ -16,6 +16,7 @@ export async function POST(request: Request) {
     );
 
     return NextResponse.json({ success: true, message: 'Booking confirmed' });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('Booking error:', error);
     if (error.message && error.message.includes('UNIQUE constraint failed')) {

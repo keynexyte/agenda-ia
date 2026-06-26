@@ -9,6 +9,7 @@ export async function GET(request: Request) {
 
   try {
     const bookings = await all('SELECT time_slot FROM bookings WHERE date = ?', [date]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const bookedSlots = bookings.map((b: any) => b.time_slot);
 
     // All possible slots

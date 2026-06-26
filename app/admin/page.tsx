@@ -5,12 +5,25 @@ import QRCode from 'qrcode';
 import { Users, Server, Shield, Activity, RefreshCw } from 'lucide-react';
 
 export default function AdminDashboard() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [bookings, setBookings] = useState<any[]>([]);
   const [ip, setIp] = useState('');
   const [port, setPort] = useState('');
   const [qrCodeUrl, setQrCodeUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
+
+  const fetchBookings = async () => {
+    try {
+      const res = await fetch('/api/bookings');
+      const data = await res.json();
+      setBookings(data.bookings || []);
+      setLastRefreshed(new Date());
+    } catch (err) {
+      console.error(err);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
     // Fetch local IP to generate QR Code
@@ -26,24 +39,13 @@ export default function AdminDashboard() {
           .catch(err => console.error(err));
       });
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchBookings();
     
     // Auto-refresh every 10 seconds
     const interval = setInterval(fetchBookings, 10000);
     return () => clearInterval(interval);
   }, []);
-
-  const fetchBookings = async () => {
-    try {
-      const res = await fetch('/api/bookings');
-      const data = await res.json();
-      setBookings(data.bookings || []);
-      setLastRefreshed(new Date());
-    } catch (err) {
-      console.error(err);
-    }
-    setLoading(false);
-  };
 
   const markAsCompleted = async (id: number) => {
     try {

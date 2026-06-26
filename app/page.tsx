@@ -30,7 +30,7 @@ function getAvailableDates() {
   maxDate.setDate(today.getDate() + daysToNextFriday);
   maxDate.setHours(23, 59, 59, 999);
   
-  let d = new Date(today);
+  const d = new Date(today);
   while (d <= maxDate) {
     const day = d.getDay();
     if (day !== 0 && day !== 6) { // Lunes a Viernes
@@ -56,12 +56,6 @@ export default function BookingPage() {
   
   const availableDates = getAvailableDates();
 
-  useEffect(() => {
-    if (step === 4 && date) {
-      fetchSlots();
-    }
-  }, [step, date]);
-
   const fetchSlots = async () => {
     setLoading(true);
     try {
@@ -73,6 +67,14 @@ export default function BookingPage() {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (step === 4 && date) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchSlots();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, date]);
 
   const handleBook = async () => {
     if (!selectedSlot) return;

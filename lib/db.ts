@@ -44,6 +44,7 @@ if (!isCloud) {
   `.catch(console.error);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const run = async (query: string, params: any[] = []): Promise<{ id?: number; changes?: number }> => {
   if (isCloud) {
     // Convert SQLite query '?' to Postgres '$1, $2'
@@ -65,6 +66,7 @@ export const run = async (query: string, params: any[] = []): Promise<{ id?: num
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const get = async (query: string, params: any[] = []): Promise<any> => {
   if (isCloud) {
     let pgQuery = query;
@@ -85,6 +87,7 @@ export const get = async (query: string, params: any[] = []): Promise<any> => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const all = async (query: string, params: any[] = []): Promise<any[]> => {
   if (isCloud) {
     let pgQuery = query;
