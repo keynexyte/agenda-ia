@@ -1,33 +1,40 @@
-import sqlite3 from 'sqlite3';
 import path from 'path';
 import { sql } from '@vercel/postgres';
 
-// If POSTGRES_URL is provided, we use Vercel Postgres (Cloud).
+// If POSTGRES_URL or VERCEL is provided, we use Vercel Postgres (Cloud).
 // Otherwise, we fallback to SQLite (Local).
-const isCloud = !!process.env.POSTGRES_URL;
+const isCloud = !!process.env.POSTGRES_URL || !!process.env.VERCEL;
 
-let db: sqlite3.Database | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let db: any = null;
 
 if (!isCloud) {
-  const dbPath = path.resolve(process.cwd(), 'bookings.sqlite');
-  db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-      console.error('Error opening database', err);
-    } else {
-      db?.run(`
-        CREATE TABLE IF NOT EXISTS bookings (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT NOT NULL,
-          department TEXT NOT NULL,
-          date TEXT NOT NULL,
-          time_slot TEXT NOT NULL,
-          status TEXT DEFAULT 'Pendiente',
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          UNIQUE(date, time_slot)
-        )
-      `);
-    }
-  });
+  try {
+    // Dynamic require prevents Vercel from loading the native sqlite3 module during build
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const sqlite3 = require('sqlite3');
+    const dbPath = path.resolve(process.cwd(), 'bookings.sqlite');
+    db = new sqlite3.Database(dbPath, (err: any) => {
+      if (err) {
+        console.error('Error opening database', err);
+      } else {
+        db?.run(`
+          CREATE TABLE IF NOT EXISTS bookings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            department TEXT NOT NULL,
+            date TEXT NOT NULL,
+            time_slot TEXT NOT NULL,
+            status TEXT DEFAULT 'Pendiente',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(date, time_slot)
+          )
+        `);
+      }
+    });
+  } catch (err) {
+    console.warn('sqlite3 is not available in this environment');
+  }
 } else {
   // Initialize Cloud Database Table
   sql`
