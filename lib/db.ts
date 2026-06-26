@@ -35,24 +35,38 @@ if (!isCloud) {
   } catch (err) {
     console.warn('sqlite3 is not available in this environment');
   }
-} else {
-  // Initialize Cloud Database Table
-  sql`
-    CREATE TABLE IF NOT EXISTS bookings (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
-      department VARCHAR(255) NOT NULL,
-      date VARCHAR(255) NOT NULL,
-      time_slot VARCHAR(255) NOT NULL,
-      status VARCHAR(255) DEFAULT 'Pendiente',
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      UNIQUE(date, time_slot)
-    )
-  `.catch(console.error);
-}
+let initialized = false;
+
+const initDb = async () => {
+  if (initialized) return;
+  
+  if (isCloud) {
+    try {
+      await sql`
+        CREATE TABLE IF NOT EXISTS bookings (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          department VARCHAR(255) NOT NULL,
+          date VARCHAR(255) NOT NULL,
+          time_slot VARCHAR(255) NOT NULL,
+          status VARCHAR(255) DEFAULT 'Pendiente',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(date, time_slot)
+        )
+      `;
+      initialized = true;
+    } catch (err) {
+      console.error('Failed to initialize Postgres DB:', err);
+    }
+  } else {
+    initialized = true;
+  }
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const run = async (query: string, params: any[] = []): Promise<{ id?: number; changes?: number }> => {
+  await initDb();
+  
   if (isCloud) {
     // Convert SQLite query '?' to Postgres '$1, $2'
     let pgQuery = query;
@@ -76,6 +90,7 @@ export const run = async (query: string, params: any[] = []): Promise<{ id?: num
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const get = async (query: string, params: any[] = []): Promise<any> => {
+  await initDb();
   if (isCloud) {
     let pgQuery = query;
     let i = 1;
@@ -98,6 +113,7 @@ export const get = async (query: string, params: any[] = []): Promise<any> => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const all = async (query: string, params: any[] = []): Promise<any[]> => {
+  await initDb();
   if (isCloud) {
     let pgQuery = query;
     let i = 1;
