@@ -65,7 +65,8 @@ export const run = async (query: string, params: any[] = []): Promise<{ id?: num
     return { changes: result.rowCount || 0 };
   } else {
     return new Promise((resolve, reject) => {
-      db!.run(query, params, function (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      db!.run(query, params, function (this: any, err: any) {
         if (err) reject(err);
         else resolve({ id: this.lastID, changes: this.changes });
       });
@@ -86,7 +87,8 @@ export const get = async (query: string, params: any[] = []): Promise<any> => {
     return result.rows[0];
   } else {
     return new Promise((resolve, reject) => {
-      db!.get(query, params, (err, row) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      db!.get(query, params, (err: any, row: any) => {
         if (err) reject(err);
         else resolve(row);
       });
@@ -107,7 +109,8 @@ export const all = async (query: string, params: any[] = []): Promise<any[]> => 
     return result.rows;
   } else {
     return new Promise((resolve, reject) => {
-      db!.all(query, params, (err, rows) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      db!.all(query, params, (err: any, rows: any) => {
         if (err) reject(err);
         else resolve(rows);
       });
