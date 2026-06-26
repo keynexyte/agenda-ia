@@ -10,7 +10,7 @@ export default function AdminDashboard() {
   const [port, setPort] = useState('');
   const [qrCodeUrl, setQrCodeUrl] = useState('');
   const [loading, setLoading] = useState(true);
-  const [lastRefreshed, setLastRefreshed] = useState(new Date());
+  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
 
   useEffect(() => {
     // Fetch local IP to generate QR Code
@@ -162,7 +162,7 @@ export default function AdminDashboard() {
             </div>
           )}
           <p style={{ marginTop: '1rem', fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center' }}>
-            Última actualización: {lastRefreshed.toLocaleTimeString()}
+            Última actualización: {lastRefreshed ? lastRefreshed.toLocaleTimeString() : 'Cargando...'}
           </p>
         </div>
       </div>

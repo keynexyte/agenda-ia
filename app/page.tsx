@@ -107,19 +107,22 @@ export default function BookingPage() {
     setClickCount(newCount);
     if (newCount >= 5) {
       setClickCount(0);
-      const password = prompt('Ingrese contraseña de administrador:');
-      if (password) {
-        fetch('/api/auth', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password })
-        }).then(res => {
-          if (res.ok) {
-            window.location.href = '/admin';
-          } else {
-            alert('Contraseña incorrecta');
-          }
-        });
+      const username = prompt('Ingrese usuario de administrador:');
+      if (username) {
+        const password = prompt('Ingrese contraseña:');
+        if (password) {
+          fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          }).then(res => {
+            if (res.ok) {
+              window.location.href = '/admin';
+            } else {
+              alert('Credenciales incorrectas');
+            }
+          });
+        }
       }
     }
   };
@@ -127,14 +130,26 @@ export default function BookingPage() {
   return (
     <main style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto', width: '100%' }}>
       <div style={{ textAlign: 'center', marginBottom: '3rem' }} className="animate-fade-in">
-        <div 
-          onClick={handleLogoClick}
-          style={{ display: 'inline-flex', background: 'rgba(59, 130, 246, 0.1)', padding: '16px', borderRadius: '50%', marginBottom: '1rem', cursor: 'pointer' }}
-        >
-          {/* PLACEHOLDER FOR COMPANY LOGO */}
-          <Bot size={40} color="var(--primary)" />
+        
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', marginBottom: '1.5rem' }}>
+          <h1 className="gradient-text" style={{ fontSize: '2.5rem', margin: 0 }}>Capacitación IA</h1>
+          <div 
+            onClick={handleLogoClick}
+            style={{ display: 'inline-flex', background: 'rgba(59, 130, 246, 0.1)', padding: '12px', borderRadius: '50%', cursor: 'pointer' }}
+            title="Área Administrativa"
+          >
+            <Bot size={32} color="var(--primary)" />
+          </div>
         </div>
-        <h1 className="gradient-text" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Capacitación IA</h1>
+
+        <div style={{ marginBottom: '1.5rem' }}>
+          <img 
+            src="/logo.jpeg" 
+            alt="Mercaldas" 
+            style={{ height: '70px', width: 'auto', margin: '0 auto', display: 'block' }}
+          />
+        </div>
+
         <p style={{ color: 'var(--text-muted)' }}>Programe su sesión de inmersión en Inteligencia Artificial</p>
       </div>
 

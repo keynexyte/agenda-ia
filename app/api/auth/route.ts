@@ -2,14 +2,13 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { password } = await request.json();
+    const { username, password } = await request.json();
 
-    // Default password 'admin123' if no custom one is provided later.
-    if (password === 'admin123') {
+    if (username === 'admin' && password === '2026') {
       const response = NextResponse.json({ success: true });
       response.cookies.set('admin_token', 'authenticated', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: request.url.startsWith('https://'),
         sameSite: 'lax',
         path: '/'
       });
