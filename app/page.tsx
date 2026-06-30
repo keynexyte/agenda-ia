@@ -14,7 +14,10 @@ const DEPARTMENTS = [
   'TICs',
   'Operaciones',
   'Gerencia',
-  'Compras'
+  'Compras',
+  'Ambiental',
+  'CEDI',
+  'Mantenimiento'
 ];
 
 function getAvailableDates() {
@@ -146,7 +149,7 @@ export default function BookingPage() {
 
         <div style={{ marginBottom: '1.5rem' }}>
           <img 
-            src="/logo.jpeg" 
+            src="/logo.png" 
             alt="Mercaldas" 
             style={{ height: '70px', width: 'auto', margin: '0 auto', display: 'block' }}
           />
