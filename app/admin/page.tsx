@@ -33,7 +33,14 @@ export default function AdminDashboard() {
         setIp(data.ip);
         const currentPort = window.location.port ? `:${window.location.port}` : '';
         setPort(currentPort);
-        const url = `http://${data.ip}${currentPort}`;
+        
+        // If deployed on Vercel, use the Vercel URL for the QR code
+        // Otherwise, use the local network IP so mobile devices can connect
+        const isVercel = window.location.hostname.includes('vercel.app');
+        const url = isVercel 
+          ? window.location.origin 
+          : `http://${data.ip}${currentPort}`;
+          
         QRCode.toDataURL(url, { width: 300, margin: 2, color: { dark: '#0f172a', light: '#f8fafc' } })
           .then(url => setQrCodeUrl(url))
           .catch(err => console.error(err));
