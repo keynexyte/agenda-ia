@@ -134,9 +134,9 @@ export default function BookingPage() {
 
   return (
     <main style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto', width: '100%' }}>
-      <div style={{ textAlign: 'center', marginBottom: '3rem' }} className="animate-fade-in">
+      <div style={{ textAlign: 'center', marginBottom: '2rem' }} className="animate-fade-in">
         
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', marginBottom: '0' }}>
           <h1 className="gradient-text" style={{ fontSize: '2.5rem', margin: 0 }}>Capacitación IA</h1>
           <div 
             onClick={handleLogoClick}
@@ -147,15 +147,15 @@ export default function BookingPage() {
           </div>
         </div>
 
-        <div style={{ marginBottom: '1.5rem' }}>
+        <div style={{ marginBottom: '0' }}>
           <img 
             src="/logo.png" 
             alt="Mercaldas" 
-            style={{ width: '260px', height: 'auto', margin: '-1rem auto 1rem auto', display: 'block' }}
+            style={{ width: '280px', height: 'auto', margin: '-1.5rem auto -1rem auto', display: 'block' }}
           />
         </div>
 
-        <p style={{ color: 'var(--text-muted)' }}>Programe su sesión de inmersión en Inteligencia Artificial</p>
+        <p style={{ color: 'var(--text-muted)', margin: 0 }}>Programe su sesión de inmersión en Inteligencia Artificial</p>
       </div>
 
       <div className="glass-panel animate-fade-in delay-1" style={{ padding: '2rem' }}>
