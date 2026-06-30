@@ -1,12 +1,19 @@
 import path from 'path';
-import { sql } from '@vercel/postgres';
+import { createPool } from '@vercel/postgres';
 
-// If POSTGRES_URL or VERCEL is provided, we use Vercel Postgres (Cloud).
+// If POSTGRES_URL, DATABASE_URL or VERCEL is provided, we use Vercel Postgres (Cloud).
 // Otherwise, we fallback to SQLite (Local).
-const isCloud = !!process.env.POSTGRES_URL || !!process.env.VERCEL;
+const isCloud = !!process.env.POSTGRES_URL || !!process.env.DATABASE_URL || !!process.env.VERCEL;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let db: any = null;
+let pool: any = null;
+
+if (isCloud) {
+  pool = createPool({
+    connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL
+  });
+}
 
 if (!isCloud) {
   try {
@@ -44,7 +51,7 @@ const initDb = async () => {
   
   if (isCloud) {
     try {
-      await sql`
+      await pool.query(`
         CREATE TABLE IF NOT EXISTS bookings (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255) NOT NULL,
@@ -55,7 +62,7 @@ const initDb = async () => {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           UNIQUE(date, time_slot)
         )
-      `;
+      `);
       initialized = true;
     } catch (err) {
       console.error('Failed to initialize Postgres DB:', err);
@@ -77,7 +84,7 @@ export const run = async (query: string, params: any[] = []): Promise<{ id?: num
       pgQuery = pgQuery.replace('?', `$${i}`);
       i++;
     }
-    const result = await sql.query(pgQuery, params);
+    const result = await pool.query(pgQuery, params);
     return { changes: result.rowCount || 0 };
   } else {
     return new Promise((resolve, reject) => {
@@ -100,7 +107,7 @@ export const get = async (query: string, params: any[] = []): Promise<any> => {
       pgQuery = pgQuery.replace('?', `$${i}`);
       i++;
     }
-    const result = await sql.query(pgQuery, params);
+    const result = await pool.query(pgQuery, params);
     return result.rows[0];
   } else {
     return new Promise((resolve, reject) => {
@@ -123,7 +130,7 @@ export const all = async (query: string, params: any[] = []): Promise<any[]> => 
       pgQuery = pgQuery.replace('?', `$${i}`);
       i++;
     }
-    const result = await sql.query(pgQuery, params);
+    const result = await pool.query(pgQuery, params);
     return result.rows;
   } else {
     return new Promise((resolve, reject) => {
