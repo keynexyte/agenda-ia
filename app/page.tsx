@@ -151,7 +151,7 @@ export default function BookingPage() {
           <img 
             src="/logo.png" 
             alt="Mercaldas" 
-            style={{ height: '70px', width: 'auto', margin: '0 auto', display: 'block' }}
+            style={{ width: '260px', height: 'auto', margin: '-1rem auto 1rem auto', display: 'block' }}
           />
         </div>
 
