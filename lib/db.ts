@@ -35,6 +35,8 @@ if (!isCloud) {
   } catch (err) {
     console.warn('sqlite3 is not available in this environment');
   }
+}
+
 let initialized = false;
 
 const initDb = async () => {
