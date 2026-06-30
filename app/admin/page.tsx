@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
-import { Users, Server, Shield, Activity, RefreshCw } from 'lucide-react';
+import { Users, Server, Shield, Activity, RefreshCw, Trash2 } from 'lucide-react';
 
 export default function AdminDashboard() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,6 +69,19 @@ export default function AdminDashboard() {
     }
   };
 
+  const cleanBookings = async () => {
+    if (!confirm('¿Estás seguro de que deseas eliminar permanentemente todas las conferencias terminadas?')) return;
+    
+    try {
+      const res = await fetch('/api/bookings/clean', { method: 'DELETE' });
+      if (res.ok) {
+        fetchBookings();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const loadPercentage = Math.min(Math.round((bookings.length / 5) * 100), 100);
 
   return (
@@ -81,13 +94,22 @@ export default function AdminDashboard() {
           </h1>
           <p style={{ color: 'var(--text-muted)' }}>Gestión de la Plataforma de Capacitación IA</p>
         </div>
-        <button 
-          onClick={fetchBookings} 
-          className="btn btn-outline"
-          style={{ padding: '8px 16px' }}
-        >
-          <RefreshCw size={16} /> Actualizar
-        </button>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button 
+            onClick={cleanBookings} 
+            className="btn"
+            style={{ padding: '8px 16px', background: 'rgba(239, 68, 68, 0.2)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)' }}
+          >
+            <Trash2 size={16} /> Limpiar Terminadas
+          </button>
+          <button 
+            onClick={fetchBookings} 
+            className="btn btn-outline"
+            style={{ padding: '8px 16px' }}
+          >
+            <RefreshCw size={16} /> Actualizar
+          </button>
+        </div>
       </header>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
