@@ -17,7 +17,8 @@ const DEPARTMENTS = [
   'Compras',
   'Ambiental',
   'CEDI',
-  'Mantenimiento'
+  'Mantenimiento',
+  'Gastronomía'
 ];
 
 function getAvailableDates() {
